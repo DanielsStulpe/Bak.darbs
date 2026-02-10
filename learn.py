@@ -8,9 +8,3 @@ model.train(
     imgsz=640,
     device="cpu"  # GPU (Jetson)
 )
-
-metrics = model.val()
-
-# Perform object detection on an image 
-results = model("https://www.pavementinteractive.org/wp-content/uploads/2007/08/Kailua_pothole.jpg") 
-results[0].show()
