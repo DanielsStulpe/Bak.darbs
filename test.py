@@ -3,7 +3,7 @@ from ultralytics import YOLO
 model = YOLO("best.pt")
 
 metrics = model.val(
-    data="dataset/data.yaml",
+    data="roboflow_dataset/data.yaml",
     split="val",
     imgsz=640,
     conf=0.001,

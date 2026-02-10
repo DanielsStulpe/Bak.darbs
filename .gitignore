@@ -2,5 +2,8 @@ runs/
 __pycache__/
 *.pt
 venv
+Kailua_pothole.jpg
 results/
 commands.txt
+potholes_weather_dataset/
+muskan_vema_dataset/

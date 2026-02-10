@@ -1,9 +1,9 @@
 from ultralytics import YOLO
 
-model = YOLO("yolov8m.pt")
+model = YOLO("yolo11n.pt")
 
 model.train(
-    data="dataset/data.yaml",
+    data="robolow_dataset/data.yaml",
     epochs=100,
     imgsz=640,
     device=0  # GPU (Jetson)
