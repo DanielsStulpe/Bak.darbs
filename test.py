@@ -1,12 +1,20 @@
 from ultralytics import YOLO
 
-model = YOLO("yolov8n.pt")
+model = YOLO("best.pt")
 
-model.train(
+metrics = model.val(
     data="dataset/data.yaml",
-    epochs=100,
+    split="val",
     imgsz=640,
-    device=0  # GPU (Jetson)
+    conf=0.001,
+    iou=0.6,
+    device="cpu"
 )
 
-metrics = model.val()
+print("mAP50:", metrics.box.map50)
+print("mAP50-95:", metrics.box.map)
+print("Precision:", metrics.box.mp)
+print("Recall:", metrics.box.mr)
+
+results = model("Kailua_pothole.jpg", conf=0.25)
+results[0].show()
