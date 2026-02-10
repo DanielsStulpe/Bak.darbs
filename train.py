@@ -3,7 +3,7 @@ from ultralytics import YOLO
 model = YOLO("yolo11n.pt")
 
 model.train(
-    data="robolow_dataset/data.yaml",
+    data="roboflow_dataset/data.yaml",
     epochs=100,
     imgsz=640,
     device=0  # GPU (Jetson)
