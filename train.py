@@ -6,6 +6,7 @@ model.train(
     data="roboflow_dataset/data.yaml",
     epochs=100,
     imgsz=640,
+    batch=2,
     workers=1,
     device=0  # GPU (Jetson)
 )
