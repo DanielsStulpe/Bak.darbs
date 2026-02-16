@@ -20,9 +20,9 @@ from detectron2.data.catalog import DatasetCatalog
 
 
 from detectron2.data.datasets import register_coco_instances
-register_coco_instances("roboflow_dataset_train", {}, "/roboflow_dataset_detectron2/train/_annotations.coco.json", "/roboflow_dataset_detectron2/train")
-register_coco_instances("roboflow_dataset_val", {}, "/roboflow_dataset_detectron2/valid/_annotations.coco.json", "/roboflow_dataset_detectron2/valid")
-register_coco_instances("roboflow_dataset_test", {}, "/roboflow_dataset_detectron2/test/_annotations.coco.json", "/roboflow_dataset_detectron2/test")
+register_coco_instances("roboflow_dataset_train", {}, "roboflow_dataset_detectron2/train/_annotations.coco.json", "roboflow_dataset_detectron2/train")
+register_coco_instances("roboflow_dataset_val", {}, "roboflow_dataset_detectron2/valid/_annotations.coco.json", "roboflow_dataset_detectron2/valid")
+register_coco_instances("roboflow_dataset_test", {}, "roboflow_dataset_detectron2/test/_annotations.coco.json", "roboflow_dataset_detectron2/test")
 
 
 from detectron2.engine import DefaultTrainer
