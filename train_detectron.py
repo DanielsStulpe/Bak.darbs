@@ -32,11 +32,11 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_X_101_
 cfg.DATASETS.TRAIN = ("roboflow_dataset_train",)
 cfg.DATASETS.TEST = ("roboflow_dataset_val",)
 
-cfg.DATALOADER.NUM_WORKERS = 4
+cfg.DATALOADER.NUM_WORKERS = 1
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml")  # Let training initialize from model zoo
-cfg.SOLVER.IMS_PER_BATCH = 4
+cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.001
-cfg.SOLVER.MAX_ITER = 1500 #adjust up if val mAP is still rising, adjust down if overfit
+cfg.SOLVER.MAX_ITER = 1000 #adjust up if val mAP is still rising, adjust down if overfit
 
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
