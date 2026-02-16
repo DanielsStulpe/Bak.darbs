@@ -6,7 +6,7 @@ setup_logger()
 import numpy as np
 import os, json, cv2, random
 # from google.colab.patches import cv2_imshow
-from IPython import display
+# from IPython import display
 import PIL
 # from google.colab.patches import cv2_imshow
 
