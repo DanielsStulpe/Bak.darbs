@@ -3,7 +3,7 @@ from ultralytics import YOLO
 model = YOLO("yolo26l.pt")
 
 model.train(
-    data="roboflow_dataset/data.yaml",
+    data="roboflow_dataset_yolo/data.yaml",
     epochs=100,
     imgsz=640,
     batch=2,
