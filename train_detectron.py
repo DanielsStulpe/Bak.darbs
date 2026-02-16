@@ -4,8 +4,10 @@ setup_logger()
 
 # import some common libraries
 import numpy as np
-import cv2
-import random
+import os, json, cv2, random
+# from google.colab.patches import cv2_imshow
+from IPython import display
+import PIL
 # from google.colab.patches import cv2_imshow
 
 # import some common detectron2 utilities
