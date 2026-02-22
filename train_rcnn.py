@@ -5,7 +5,7 @@ from rcnn_data import PotholeDataset
 
 
 # load a model pre-trained on COCO
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
 
 # replace the classifier with a new one, that has
 # num_classes which is user-defined
@@ -38,17 +38,17 @@ val_dataset = PotholeDataset(
 
 val_loader = torch.utils.data.DataLoader(
     val_dataset,
-    batch_size=4,
+    batch_size=2,
     shuffle=False,
     collate_fn=collate_fn
 )
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-optimizer = torch.optim.SGD(
+optimizer = torch.optim.AdamW(
     model.parameters(),
-    lr=0.005,
+    lr=0.002,
     momentum=0.9,
     weight_decay=0.0005
 )
@@ -117,7 +117,7 @@ for epoch in range(num_epochs):
 
     print(f"Epoch {epoch} Training Loss: {total_loss}")
 
-    # 🔥 VALIDATION STEP
+    # VALIDATION STEP
     results = evaluate(model, val_loader, device)
 
     map50 = results["map_50"].item()
