@@ -44,11 +44,6 @@ val_loader = torch.utils.data.DataLoader(
 )
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# Wrap model for multi-GPU (only if multiple GPUs exist)
-if torch.cuda.device_count() > 1:
-    print(f"Using {torch.cuda.device_count()} GPUs")
-    model = torch.nn.DataParallel(model)
-# Move model to device (cuda:0 if GPUs, cpu if no GPU)
 model.to(device)
 
 optimizer = torch.optim.SGD(
