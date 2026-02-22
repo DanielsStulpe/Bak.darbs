@@ -37,16 +37,12 @@ class PotholeDataset(CocoDetection):
             areas.append(ann["area"])
             iscrowd.append(ann["iscrowd"])
 
-            # For Mask R-CNN
             if "segmentation" in ann and ann["segmentation"]:
                 seg = ann["segmentation"]
-
                 if isinstance(seg, list):
-                    # polygon format
                     rles = coco_mask.frPyObjects(seg, img.height, img.width)
                     rle = coco_mask.merge(rles)
                 elif isinstance(seg, dict):
-                    # already RLE
                     rle = seg
                 else:
                     continue
@@ -71,6 +67,7 @@ class PotholeDataset(CocoDetection):
             masks = torch.as_tensor(np.array(masks), dtype=torch.uint8)
             target["masks"] = masks
 
+        # Convert to tensor
         img = torchvision.transforms.functional.to_tensor(img)
 
         if self.transforms:
