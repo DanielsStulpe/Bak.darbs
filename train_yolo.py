@@ -37,15 +37,12 @@ with open(csv_file, mode="w", newline="") as f:
     writer.writerow([
         "Model",
         "Parameters_M",
-        "GFLOPs",
         "Model_size_MB",
         "mAP50",
         "mAP50-95",
         "Precision",
         "Recall",
-        "Training_time_sec",
-        "Inference_time_ms",
-        "FPS"
+        "Training_time_sec"
     ])
 
 # ==========================
@@ -92,42 +89,17 @@ for model_name in models_to_train:
     
     # PARAMETERS
     params = sum(p.numel() for p in model.model.parameters()) / 1e6  # Millions
-    
-    # GFLOPs (Ultralytics built-in)
-    gflops = model.info(verbose=False)[2]  # returns (layers, params, GFLOPs)
-
-    # INFERENCE SPEED TEST
-    dummy = torch.zeros(1, 3, imgsz, imgsz).to("cuda")
-
-    # Warmup
-    for _ in range(5):
-        _ = model.model(dummy)
-
-    torch.cuda.synchronize()
-    start_inf = time.time()
-
-    for _ in range(20):
-        _ = model.model(dummy)
-
-    torch.cuda.synchronize()
-    inference_time = (time.time() - start_inf) / 20
-
-    inference_ms = inference_time * 1000
-    fps = 1 / inference_time
 
     
     # PRINT RESULTS
     print(f"\nResults for {model_name}")
     print(f"Parameters: {params:.2f}M")
-    print(f"GFLOPs: {gflops}")
     print(f"Model size: {model_size_mb:.2f} MB")
     print(f"mAP50: {map50}")
     print(f"mAP50-95: {map50_95}")
     print(f"Precision: {precision}")
     print(f"Recall: {recall}")
     print(f"Training time: {training_time:.2f} sec")
-    print(f"Inference time: {inference_ms:.2f} ms")
-    print(f"FPS: {fps:.2f}")
 
     
     # SAVE TO CSV
@@ -136,15 +108,12 @@ for model_name in models_to_train:
         writer.writerow([
             model_name,
             round(params, 2),
-            gflops,
             round(model_size_mb, 2),
             map50,
             map50_95,
             precision,
             recall,
             round(training_time, 2),
-            round(inference_ms, 2),
-            round(fps, 2)
         ])
 
     # Free GPU memory (important for Jetson)
