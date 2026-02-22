@@ -26,7 +26,7 @@ train_dataset = PotholeDataset(
 
 train_loader = torch.utils.data.DataLoader(
     train_dataset,
-    batch_size=8,
+    batch_size=4,
     shuffle=True,
     collate_fn=collate_fn
 )
@@ -38,7 +38,7 @@ val_dataset = PotholeDataset(
 
 val_loader = torch.utils.data.DataLoader(
     val_dataset,
-    batch_size=8,
+    batch_size=4,
     shuffle=False,
     collate_fn=collate_fn
 )
