@@ -7,11 +7,11 @@ from rcnn_data import PotholeDataset
 
 def evaluate(model, data_loader, device):
     model.eval()
-    metric = MeanAveragePrecision()
+    metric = MeanAveragePrecision(class_metrics=True)
 
     with torch.no_grad():
         for images, targets in data_loader:
-            images = [img.to(device) for img in images]
+            images = [img.to(device) for img in images] 
 
             # Get predictions
             outputs = model(images)
@@ -67,7 +67,7 @@ val_loader = torch.utils.data.DataLoader(
 
 results = evaluate(model, val_loader, device)
 
-print("mAP@0.5: {:.4f}".format(results["map_50"].item()))
-print("mAP@0.5:0.95: {:.4f}".format(results["map"].item()))
-print("Precision: {:.4f}".format(results["precision"].item()))
-print("Recall: {:.4f}".format(results["recall"].item()))
+print("mAP50: {:.4f}".format(results["map_50"].item()))
+print("mAP50-95: {:.4f}".format(results["map"].item()))
+print("Precision: {:.4f}".format(results["map_per_class"].item()))
+print("Recall: {:.4f}".format(results["mar_100_per_class"].item()))
