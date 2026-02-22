@@ -43,8 +43,8 @@ val_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-model.to(device)
+model = torch.nn.DataParallel(model)  # Wrap model for multiple GPUs
+model = model.cuda()                  # Moves model to all available GPUs
 
 optimizer = torch.optim.SGD(
     model.parameters(),

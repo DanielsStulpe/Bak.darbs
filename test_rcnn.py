@@ -1,64 +1,73 @@
-import detectron2
-from detectron2.utils.logger import setup_logger
-setup_logger()
+import torch
+import torchvision
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
-# import some common libraries
-import numpy as np
-import os, json, cv2, random
-# from google.colab.patches import cv2_imshow
-# from IPython import display
-import PIL
-# from google.colab.patches import cv2_imshow
+from rcnn_data import PotholeDataset
 
-# import some common detectron2 utilities
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
-from detectron2.data import MetadataCatalog
-from detectron2.data.catalog import DatasetCatalog
+def evaluate(model, data_loader, device):
+    model.eval()
+    metric = MeanAveragePrecision()
+
+    with torch.no_grad():
+        for images, targets in data_loader:
+            images = [img.to(device) for img in images]
+
+            # Get predictions
+            outputs = model(images)
+
+            # Move predictions and targets to CPU for metric
+            preds = []
+            for output in outputs:
+                preds.append({
+                    "boxes": output["boxes"].cpu(),
+                    "scores": output["scores"].cpu(),
+                    "labels": output["labels"].cpu()
+                })
+
+            targets_cpu = []
+            for t in targets:
+                targets_cpu.append({
+                    "boxes": t["boxes"],
+                    "labels": t["labels"]
+                })
+
+            metric.update(preds, targets_cpu)
+
+    results = metric.compute()
+    return results
+
+def collate_fn(batch):
+    return tuple(zip(*batch))
 
 
-from detectron2.data.datasets import register_coco_instances
-register_coco_instances("roboflow_dataset_train", {}, "roboflow_dataset_detectron2/train/_annotations.coco.json", "roboflow_dataset_detectron2/train")
-register_coco_instances("roboflow_dataset_val", {}, "roboflow_dataset_detectron2/valid/_annotations.coco.json", "roboflow_dataset_detectron2/valid")
-register_coco_instances("roboflow_dataset_test", {}, "roboflow_dataset_detectron2/test/_annotations.coco.json", "roboflow_dataset_detectron2/test")
+num_classes = 2
 
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None)
 
-from detectron2.engine import DefaultTrainer
+in_features = model.roi_heads.box_predictor.cls_score.in_features
+model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"))
-cfg.DATASETS.TRAIN = ("roboflow_dataset_train",)
-cfg.DATASETS.TEST = ("roboflow_dataset_val",)
+# Map the saved weights to the current device
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+model.load_state_dict(torch.load("best_fasterrcnn.pth", map_location=device))
+model.to(device)
 
+val_dataset = PotholeDataset(
+    img_folder="roboflow_dataset_coco/valid",
+    ann_file="roboflow_dataset_coco/valid/_annotations.coco.json"
+)
 
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")  # path to the model we just trained
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set a custom testing threshold
-predictor = DefaultPredictor(cfg)
+val_loader = torch.utils.data.DataLoader(
+    val_dataset,
+    batch_size=4,
+    shuffle=False,
+    collate_fn=collate_fn
+)
 
+results = evaluate(model, val_loader, device)
 
-import pickle
-with open("cfg.pkl", "wb") as f:
-    pickle.dump(cfg, f)
-
-my_dataset_test_metadata = MetadataCatalog.get("physics_train")
-from detectron2.utils.visualizer import ColorMode
-dataset_dicts = DatasetCatalog.get("physics_test")
-for d in random.sample(dataset_dicts, 5):    
-    im = cv2.imread(d["file_name"])
-    outputs = predictor(im)  # format is documented at https://detectron2.readthedocs.io/tutorials/models.html#model-output-format
-    v = Visualizer(im[:, :, ::-1],
-                   metadata=my_dataset_test_metadata, 
-                   scale=0.5, 
-#                    instance_mode=ColorMode.IMAGE_BW   # remove the colors of unsegmented pixels. This option is only available for segmentation models
-    )
-    out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
-    cv2_imshow(out.get_image()[:, :, ::-1])
-
-from detectron2.evaluation import COCOEvaluator, inference_on_dataset
-from detectron2.data import build_detection_test_loader
-evaluator = COCOEvaluator("physics_test", ("bbox", "segm"), False, output_dir="./output/")
-test_loader = build_detection_test_loader(cfg, "physics_test")
-inference_on_dataset(trainer.model, test_loader, evaluator)
-# another equivalent way to evaluate the model is to use `trainer.test`
+print("mAP@0.5: {:.4f}".format(results["map_50"].item()))
+print("mAP@0.5:0.95: {:.4f}".format(results["map"].item()))
+print("Precision: {:.4f}".format(results["precision"].item()))
+print("Recall: {:.4f}".format(results["recall"].item()))
