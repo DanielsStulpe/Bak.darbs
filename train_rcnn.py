@@ -81,16 +81,16 @@ def evaluate(model, data_loader, device):
             preds = []
             for output in outputs:
                 preds.append({
-                    "boxes": output["boxes"].cpu(),
-                    "scores": output["scores"].cpu(),
-                    "labels": output["labels"].cpu()
+                    "boxes": output["boxes"].to(device),
+                    "scores": output["scores"].to(device),
+                    "labels": output["labels"].to(device)
                 })
 
             targets_cpu = []
             for t in targets:
                 targets_cpu.append({
-                    "boxes": t["boxes"],
-                    "labels": t["labels"]
+                    "boxes": t["boxes"].to(device),
+                    "labels": t["labels"].to(device)
                 })
 
             metric.update(preds, targets_cpu)

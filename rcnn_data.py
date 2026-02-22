@@ -15,6 +15,10 @@ class PotholeDataset(CocoDetection):
     def __getitem__(self, idx):
         img, annotations = super().__getitem__(idx)
 
+        # Convert grayscale images to RGB
+        if img.mode != "RGB":
+            img = img.convert("RGB")  # <-- Force 3 channels
+
         image_id = self.ids[idx]
 
         boxes = []
@@ -49,7 +53,7 @@ class PotholeDataset(CocoDetection):
 
                 mask = coco_mask.decode(rle)
                 masks.append(mask)
-                
+
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         labels = torch.as_tensor(labels, dtype=torch.int64)
         areas = torch.as_tensor(areas, dtype=torch.float32)
