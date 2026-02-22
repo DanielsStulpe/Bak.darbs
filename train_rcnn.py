@@ -5,7 +5,8 @@ from rcnn_data import PotholeDataset
 
 
 # load a model pre-trained on COCO
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
+# model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
 
 # replace the classifier with a new one, that has
 # num_classes which is user-defined
@@ -46,10 +47,10 @@ val_loader = torch.utils.data.DataLoader(
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-optimizer = torch.optim.AdamW(
+optimizer = torch.optim.SGD(
     model.parameters(),
-    lr=0.002,
-    # momentum=0.9,
+    lr=0.01,
+    momentum=0.9,
     weight_decay=0.0005
 )
 
