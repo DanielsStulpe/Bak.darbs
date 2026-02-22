@@ -1,11 +1,12 @@
 import torch
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 from rcnn_data import PotholeDataset
 
 
 # load a model pre-trained on COCO
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
+model = torchvision.models.detection.maskrcnn_resnet50_fpn(weights="DEFAULT")
 # model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
 
 # replace the classifier with a new one, that has
@@ -15,6 +16,12 @@ num_classes = 2  # 1 class (person) + background
 in_features = model.roi_heads.box_predictor.cls_score.in_features
 # replace the pre-trained head with a new one
 model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+
+# replace the mask predictor with a new one
+in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
+hidden_layer = 256
+# and replace the mask predictor with a new one
+model.roi_heads.mask_predictor = MaskRCNNPredictor(in_features_mask, hidden_layer, num_classes)
 
 
 def collate_fn(batch):
@@ -44,13 +51,13 @@ val_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-optimizer = torch.optim.SGD(
+optimizer = torch.optim.AdamW(
     model.parameters(),
-    lr=0.01,
-    momentum=0.9,
+    lr=0.00001,
+    # momentum=0.9,
     weight_decay=0.0005
 )
 
