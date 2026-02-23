@@ -1,7 +1,10 @@
 import torch
 import torchvision
+import time
+import os
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from rcnn_data import PotholeDataset
+
 
 
 # load a model pre-trained on COCO
@@ -97,6 +100,8 @@ def evaluate(model, data_loader, device):
 
 best_map = 0.0
 
+start_time = time.time()
+
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -132,3 +137,12 @@ for epoch in range(num_epochs):
         best_map = map50
         torch.save(model.state_dict(), "best_fasterrcnn.pth")
         print("Best model (by mAP@0.5) saved!")
+
+
+training_time = time.time() - start_time
+model_size_mb = os.path.getsize("best_fasterrcnn.pth") / (1024 * 1024)
+params = sum(p.numel() for p in model.parameters()) / 1e6
+
+print(f"Total training time: {training_time:.2f} seconds")
+print(f"Model size: {model_size_mb:.2f} MB")
+print(f"Total parameters: {params:.2f}M")
