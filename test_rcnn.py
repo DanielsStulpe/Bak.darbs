@@ -69,5 +69,30 @@ results = evaluate(model, val_loader, device)
 
 print("mAP50: {:.4f}".format(results["map_50"].item()))
 print("mAP50-95: {:.4f}".format(results["map"].item()))
-print("Precision: {:.4f}".format(results["precision"].item()))
-print("Recall: {:.4f}".format(results["recall"].item()))
+
+
+# ---- YOLO-style mp and mr ----
+
+# IoU = 0.5 is first threshold
+iou_idx = 0  
+
+# area=all is index 0
+area_idx = 0  
+
+# use largest max detections (last index)
+max_det_idx = -1  
+
+# precision tensor: (T, R, K, A, M)
+precision_tensor = results["precision"][iou_idx, :, :, area_idx, max_det_idx]
+
+# average over recall thresholds (R) and classes (K)
+mp = precision_tensor.mean()
+
+# recall tensor: (T, K, A, M)
+recall_tensor = results["recall"][iou_idx, :, area_idx, max_det_idx]
+
+# average over classes (K)
+mr = recall_tensor.mean()
+
+print("Precision (mp): {:.4f}".format(mp.item()))
+print("Recall (mr): {:.4f}".format(mr.item()))
