@@ -4,6 +4,7 @@ __pycache__/
 *.pth
 venv
 experiments/
+model_comparison_results/
 commands.txt
 potholes_weather_dataset/
 muskan_vema_dataset/
