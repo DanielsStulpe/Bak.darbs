@@ -2,6 +2,7 @@ import torch
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
+from torchvision.ops import box_iou
 
 from rcnn_data import PotholeDataset
 
@@ -37,6 +38,58 @@ def evaluate(model, data_loader, device):
     results = metric.compute()
     return results
 
+
+def compute_yolo_style_pr(model, data_loader, device, conf_thresh=0.25, iou_thresh=0.5):
+    model.eval()
+
+    total_tp = 0
+    total_fp = 0
+    total_fn = 0
+
+    with torch.no_grad():
+        for images, targets in data_loader:
+            images = [img.to(device) for img in images]
+            outputs = model(images)
+
+            for output, target in zip(outputs, targets):
+                preds_boxes = output["boxes"]
+                preds_scores = output["scores"]
+                preds_labels = output["labels"]
+
+                gt_boxes = target["boxes"].to(device)
+                gt_labels = target["labels"].to(device)
+
+                # Filter by confidence threshold
+                keep = preds_scores >= conf_thresh
+                preds_boxes = preds_boxes[keep]
+                preds_labels = preds_labels[keep]
+
+                matched_gt = []
+
+                if len(preds_boxes) > 0 and len(gt_boxes) > 0:
+                    ious = box_iou(preds_boxes, gt_boxes)
+
+                    for pred_idx in range(len(preds_boxes)):
+                        max_iou, gt_idx = ious[pred_idx].max(0)
+
+                        if max_iou >= iou_thresh and gt_idx.item() not in matched_gt:
+                            total_tp += 1
+                            matched_gt.append(gt_idx.item())
+                        else:
+                            total_fp += 1
+
+                    total_fn += len(gt_boxes) - len(matched_gt)
+
+                else:
+                    total_fp += len(preds_boxes)
+                    total_fn += len(gt_boxes)
+
+    precision = total_tp / (total_tp + total_fp + 1e-6)
+    recall = total_tp / (total_tp + total_fn + 1e-6)
+
+    return precision, recall
+
+
 def collate_fn(batch):
     return tuple(zip(*batch))
 
@@ -70,29 +123,7 @@ results = evaluate(model, val_loader, device)
 print("mAP50: {:.4f}".format(results["map_50"].item()))
 print("mAP50-95: {:.4f}".format(results["map"].item()))
 
+mp, mr = compute_yolo_style_pr(model, val_loader, device, conf_thresh=0.25)
 
-# ---- YOLO-style mp and mr ----
-
-# IoU = 0.5 is first threshold
-iou_idx = 0  
-
-# area=all is index 0
-area_idx = 0  
-
-# use largest max detections (last index)
-max_det_idx = -1  
-
-# precision tensor: (T, R, K, A, M)
-precision_tensor = results["precision"][iou_idx, :, :, area_idx, max_det_idx]
-
-# average over recall thresholds (R) and classes (K)
-mp = precision_tensor.mean()
-
-# recall tensor: (T, K, A, M)
-recall_tensor = results["recall"][iou_idx, :, area_idx, max_det_idx]
-
-# average over classes (K)
-mr = recall_tensor.mean()
-
-print("Precision (mp): {:.4f}".format(mp.item()))
-print("Recall (mr): {:.4f}".format(mr.item()))
+print("Precision (YOLO-style): {:.4f}".format(mp))
+print("Recall (YOLO-style): {:.4f}".format(mr))
