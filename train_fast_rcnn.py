@@ -52,7 +52,7 @@ model.to(device)
 
 optimizer = torch.optim.AdamW(
     model.parameters(),
-    lr=0.00001,
+    lr=0.00005,
     # momentum=0.9,
     weight_decay=0.0005
 )

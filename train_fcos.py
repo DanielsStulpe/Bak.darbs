@@ -1,12 +1,14 @@
 import torch
 import torchvision
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
+import time
+import os
+from torchvision.models.detection.fcos import FCOS as FCOSPredictor
 from rcnn_data import PotholeDataset
 
 
+
 # load a model pre-trained on COCO
-model = torchvision.models.detection.maskrcnn_resnet50_fpn(weights="DEFAULT")
+model = torchvision.models.detection.fcos_resnet50_fpn(weights="DEFAULT")
 # model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
 
 # replace the classifier with a new one, that has
@@ -15,13 +17,7 @@ num_classes = 2  # 1 class (person) + background
 # get number of input features for the classifier
 in_features = model.roi_heads.box_predictor.cls_score.in_features
 # replace the pre-trained head with a new one
-model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
-# replace the mask predictor with a new one
-in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
-hidden_layer = 256
-# and replace the mask predictor with a new one
-model.roi_heads.mask_predictor = MaskRCNNPredictor(in_features_mask, hidden_layer, num_classes)
+model.roi_heads.box_predictor = FCOSPredictor(in_features, num_classes)
 
 
 def collate_fn(batch):
@@ -56,7 +52,7 @@ model.to(device)
 
 optimizer = torch.optim.AdamW(
     model.parameters(),
-    lr=0.00001,
+    lr=0.00005,
     # momentum=0.9,
     weight_decay=0.0005
 )
@@ -104,6 +100,8 @@ def evaluate(model, data_loader, device):
 
 best_map = 0.0
 
+start_time = time.time()
+
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -139,3 +137,12 @@ for epoch in range(num_epochs):
         best_map = map50
         torch.save(model.state_dict(), "best_fasterrcnn.pth")
         print("Best model (by mAP@0.5) saved!")
+
+
+training_time = time.time() - start_time
+model_size_mb = os.path.getsize("best_fasterrcnn.pth") / (1024 * 1024)
+params = sum(p.numel() for p in model.parameters()) / 1e6
+
+print(f"Total training time: {training_time:.2f} seconds")
+print(f"Model size: {model_size_mb:.2f} MB")
+print(f"Total parameters: {params:.2f}M")
