@@ -26,10 +26,10 @@ optimizer = "SGD"
 lr0 = 0.0025
 weight_decay = 0.0005
 
-results_dir = "model_comparison_results"
+results_dir = "yolo_models_results"
 os.makedirs(results_dir, exist_ok=True)
 
-csv_file = os.path.join(results_dir, "results.csv")
+csv_file = os.path.join(results_dir, "validation_results.csv")
 
 # ==========================
 # CSV HEADER
@@ -70,7 +70,7 @@ for model_name in models_to_train:
         lr0=lr0,
         weight_decay=weight_decay,
         workers=1,
-        device=0,
+        device=0 if torch.cuda.is_available() else "cpu",
         name=f"train_{model_name.replace('.pt','')}"
     )
 
