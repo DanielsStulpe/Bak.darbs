@@ -7,7 +7,6 @@ References:
 
 import torch
 import torchvision
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
 import os
@@ -48,18 +47,16 @@ def evaluate(model, data_loader, device):
 
 
 
-results_dir = "faster_rcnn_results"
+results_dir = "retinanet_results"
 os.makedirs(results_dir, exist_ok=True)
 
 num_classes = 2
 
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None)
-in_features = model.roi_heads.box_predictor.cls_score.in_features
-model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+model = torchvision.models.detection.retinanet_resnet50_fpn(weights=None)
 
 # Map the saved weights to the current device
 device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device("cpu")
-model.load_state_dict(torch.load(os.path.join(results_dir, "best_faster_rcnn.pth"), weights_only=True))
+model.load_state_dict(torch.load(os.path.join(results_dir, "best_retinanet.pth"), weights_only=True))
 model.to(device)
 
 test_dataset = PotholeDataset(

@@ -38,8 +38,10 @@ for model in models:
         data="roboflow_dataset_yolo/data.yaml",
         split="test",
         imgsz=640,
-        conf=0.001,
+        batch=1,
+        conf=0.25,
         iou=0.7,
+        max_det=100,
         device=0 if torch.cuda.is_available() else "cpu"
     )
 
