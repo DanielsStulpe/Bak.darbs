@@ -11,7 +11,6 @@ from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
 import os
 import time
-import utils
 
 from rcnn_data import PotholeDataset
 
@@ -47,6 +46,9 @@ def evaluate(model, data_loader, device):
     return results
 
 
+def collate_fn(batch):
+    return tuple(zip(*batch))
+
 
 results_dir = "faster_rcnn_results"
 os.makedirs(results_dir, exist_ok=True)
@@ -68,7 +70,7 @@ train_loader = torch.utils.data.DataLoader(
     train_dataset,
     batch_size=4,
     shuffle=True,
-    collate_fn=utils.collate_fn
+    collate_fn=collate_fn
 )
 
 val_dataset = PotholeDataset(
@@ -80,7 +82,7 @@ val_loader = torch.utils.data.DataLoader(
     val_dataset,
     batch_size=2,
     shuffle=False,
-    collate_fn=utils.collate_fn
+    collate_fn=collate_fn
 )
 
 

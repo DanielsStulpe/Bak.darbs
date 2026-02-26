@@ -10,7 +10,6 @@ import torchvision
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
 import os
-import utils
 
 from rcnn_data import PotholeDataset
 
@@ -46,6 +45,9 @@ def evaluate(model, data_loader, device):
     return results
 
 
+def collate_fn(batch):
+    return tuple(zip(*batch))
+
 
 results_dir = "ssd_results"
 os.makedirs(results_dir, exist_ok=True)
@@ -68,7 +70,7 @@ test_loader = torch.utils.data.DataLoader(
     test_dataset,
     batch_size=1,
     shuffle=False,
-    collate_fn=utils.collate_fn
+    collate_fn=collate_fn
 )
 
 results = evaluate(model, test_loader, device)
