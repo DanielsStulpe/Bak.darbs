@@ -1,6 +1,5 @@
 import torch
 import torchvision
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
 import os
@@ -9,15 +8,12 @@ import time
 from rcnn_data import PotholeDataset
 
 
-results_dir = "faster_rcnn_results"
+results_dir = "ssd_results"
 os.makedirs(results_dir, exist_ok=True)
 
 
 # load a model pre-trained on COCO
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights="DEFAULT")
-num_classes = 2  # 1 class (person) + background
-in_features = model.roi_heads.box_predictor.cls_score.in_features
-model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+model = torchvision.models.detection.ssd300_vgg16(weights="DEFAULT")
 
 
 def collate_fn(batch):
@@ -48,8 +44,10 @@ val_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
+
 
 optimizer = torch.optim.SGD(
     model.parameters(),
@@ -66,41 +64,6 @@ lr_scheduler = torch.optim.lr_scheduler.StepLR(
 
 num_epochs = 100
 
-
-def evaluate(model, data_loader, device):
-    model.eval()
-    metric = MeanAveragePrecision()
-
-    with torch.no_grad():
-        for images, targets in data_loader:
-            images = [img.to(device) for img in images]
-
-            outputs = model(images)
-
-            preds = []
-            for output in outputs:
-                preds.append({
-                    "boxes": output["boxes"].to(device),
-                    "scores": output["scores"].to(device),
-                    "labels": output["labels"].to(device)
-                })
-
-            targets_cpu = []
-            for t in targets:
-                targets_cpu.append({
-                    "boxes": t["boxes"].to(device),
-                    "labels": t["labels"].to(device)
-                })
-
-            metric.update(preds, targets_cpu)
-
-    results = metric.compute()
-    return results
-
-
-best_map = 0.0
-
-start_time = time.time()
 
 def evaluate(model, data_loader, device):
     model.eval()
@@ -170,12 +133,12 @@ for epoch in range(num_epochs):
     # Save best model based on mAP@0.5
     if map50 > best_map:
         best_map = map50
-        torch.save(model.state_dict(), os.path.join(results_dir, "best_faster_rcnn.pth"))
+        torch.save(model.state_dict(), os.path.join(results_dir, "best_ssd.pth"))
         print("Best model (by mAP@0.5) saved!")
 
 
 training_time = time.time() - start_time
-model_size_mb = os.path.getsize(os.path.join(results_dir, "best_faster_rcnn.pth")) / (1024 * 1024)
+model_size_mb = os.path.getsize(os.path.join(results_dir, "best_ssd.pth")) / (1024 * 1024)
 params = sum(p.numel() for p in model.parameters()) / 1e6
 
 

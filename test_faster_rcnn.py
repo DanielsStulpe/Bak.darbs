@@ -39,7 +39,7 @@ def evaluate(model, data_loader, device):
     return results
 
 
-def compute_yolo_style_pr(model, data_loader, device, conf_thresh=0.25, iou_thresh=0.5):
+def compute_yolo_style_pr(model, data_loader, device, conf_thresh=0.001, iou_thresh=0.7):
     model.eval()
 
     total_tp = 0

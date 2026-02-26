@@ -22,8 +22,8 @@ data_path = "roboflow_dataset_yolo/data.yaml"
 imgsz = 640
 epochs = 100
 batch_size = 4
-optimizer = "AdamW"
-lr0 = 0.00005
+optimizer = "SGD"
+lr0 = 0.0025
 weight_decay = 0.0005
 
 results_dir = "model_comparison_results"

@@ -1,10 +1,15 @@
 import torch
 import torchvision
-import time
+from torchmetrics.detection.mean_ap import MeanAveragePrecision
+
 import os
-from torchvision.models.detection.fcos import FCOS as FCOSPredictor
+import time
+
 from rcnn_data import PotholeDataset
 
+
+results_dir = "fcos_results"
+os.makedirs(results_dir, exist_ok=True)
 
 
 # load a model pre-trained on COCO
@@ -13,6 +18,7 @@ model = torchvision.models.detection.fcos_resnet50_fpn(weights="DEFAULT")
 
 def collate_fn(batch):
     return tuple(zip(*batch))
+
 
 train_dataset = PotholeDataset(
     img_folder="roboflow_dataset_coco/train",
@@ -38,25 +44,26 @@ val_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-optimizer = torch.optim.AdamW(
+
+optimizer = torch.optim.SGD(
     model.parameters(),
-    lr=0.00005,
+    lr=0.0025,
     # momentum=0.9,
     weight_decay=0.0005
 )
 
 lr_scheduler = torch.optim.lr_scheduler.StepLR(
     optimizer,
-    step_size=3,
+    step_size=5,
     gamma=0.1
 )
 
 num_epochs = 100
 
-from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
 def evaluate(model, data_loader, device):
     model.eval()
@@ -126,13 +133,20 @@ for epoch in range(num_epochs):
     # Save best model based on mAP@0.5
     if map50 > best_map:
         best_map = map50
-        torch.save(model.state_dict(), "best_fasterrcnn.pth")
+        torch.save(model.state_dict(), os.path.join(results_dir, "best_fcos.pth"))
         print("Best model (by mAP@0.5) saved!")
 
 
 training_time = time.time() - start_time
-model_size_mb = os.path.getsize("best_fasterrcnn.pth") / (1024 * 1024)
+model_size_mb = os.path.getsize(os.path.join(results_dir, "best_fcos.pth")) / (1024 * 1024)
 params = sum(p.numel() for p in model.parameters()) / 1e6
+
+
+with open(os.path.join(results_dir, "results.txt"), mode="w") as file:
+    file.write(f"Total training time: {training_time:.2f} seconds\n")
+    file.write(f"Model size: {model_size_mb:.2f} MB\n")
+    file.write(f"Total parameters: {params:.2f}M\n")
+
 
 print(f"Total training time: {training_time:.2f} seconds")
 print(f"Model size: {model_size_mb:.2f} MB")
