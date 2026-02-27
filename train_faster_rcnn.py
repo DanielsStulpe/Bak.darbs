@@ -28,16 +28,16 @@ def evaluate(model, data_loader, device):
         preds = []
         for output in outputs:
             preds.append({
-                "boxes": output["boxes"],
-                "scores": output["scores"],
-                "labels": output["labels"]
+                "boxes": output["boxes"].to(device),
+                "scores": output["scores"].to(device),
+                "labels": output["labels"].to(device)
             })
 
         target = []
         for t in targets:
             target.append({
-                "boxes": t["boxes"],
-                "labels": t["labels"]
+                "boxes": t["boxes"].to(device),
+                "labels": t["labels"].to(device)
             })
 
         metric.update(preds, target)

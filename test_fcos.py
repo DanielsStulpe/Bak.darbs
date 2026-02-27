@@ -14,10 +14,13 @@ import os
 from rcnn_data import PotholeDataset
 
 
+iou_thresholds = [0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+rec_thresholds = [0.25 + 0.01 * i for i in range(76)]
+
 @torch.inference_mode()
 def evaluate(model, data_loader, device):
     model.eval()
-    metric = MeanAveragePrecision(class_metrics=True)
+    metric = MeanAveragePrecision(class_metrics=True, iou_thresholds=iou_thresholds, rec_thresholds=rec_thresholds)
 
     for images, targets in data_loader:
         images = [img.to(device) for img in images]
@@ -27,16 +30,16 @@ def evaluate(model, data_loader, device):
         preds = []
         for output in outputs:
             preds.append({
-                "boxes": output["boxes"],
-                "scores": output["scores"],
-                "labels": output["labels"]
+                "boxes": output["boxes"].to(device),
+                "scores": output["scores"].to(device),
+                "labels": output["labels"].to(device)
             })
 
         target = []
         for t in targets:
             target.append({
-                "boxes": t["boxes"],
-                "labels": t["labels"]
+                "boxes": t["boxes"].to(device),
+                "labels": t["labels"].to(device)
             })
 
         metric.update(preds, target)
