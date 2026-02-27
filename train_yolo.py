@@ -23,8 +23,7 @@ imgsz = 640
 epochs = 100
 batch_size = 4
 optimizer = "SGD"
-lr0 = 0.0025
-weight_decay = 0.0005
+lr0 = 0.001
 
 results_dir = "yolo_models_results"
 os.makedirs(results_dir, exist_ok=True)
@@ -68,7 +67,6 @@ for model_name in models_to_train:
         batch=batch_size,
         optimizer=optimizer,
         lr0=lr0,
-        weight_decay=weight_decay,
         workers=1,
         device=0 if torch.cuda.is_available() else "cpu",
         name=f"train_{model_name.replace('.pt','')}"

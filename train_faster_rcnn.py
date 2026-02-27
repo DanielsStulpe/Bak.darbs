@@ -92,15 +92,15 @@ model.to(device)
 
 optimizer = torch.optim.SGD(
     model.parameters(),
-    lr=0.0025,
-    # momentum=0.9,
-    weight_decay=0.0005
+    lr=0.0005,
+    momentum=0.9,
+    weight_decay=0.0001
 )
 
 
 lr_scheduler = torch.optim.lr_scheduler.StepLR(
     optimizer,
-    step_size=5,
+    step_size=3,
     gamma=0.1
 )
 

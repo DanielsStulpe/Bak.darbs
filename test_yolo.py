@@ -40,7 +40,6 @@ for model in models:
         imgsz=640,
         batch=1,
         conf=0.25,
-        iou=0.7,
         max_det=100,
         device=0 if torch.cuda.is_available() else "cpu"
     )

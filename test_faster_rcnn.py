@@ -84,11 +84,9 @@ results = evaluate(model, test_loader, device)
 with open(os.path.join(results_dir, "results.txt"), mode="w") as file:
     file.write("mAP50: {:.4f}\n".format(results["map_50"].item()))
     file.write("mAP50-95: {:.4f}\n".format(results["map"].item()))
-    file.write("Precision: {:.4f}\n".format(results["map_per_class"].item()))
     file.write("Recall: {:.4f}\n".format(results["mar_100_per_class"].item()))
 
 
 print("mAP50: {:.4f}".format(results["map_50"].item()))
 print("mAP50-95: {:.4f}".format(results["map"].item()))
-print("Precision: {:.4f}".format(results["map_per_class"].item()))
 print("Recall: {:.4f}".format(results["mar_100_per_class"].item()))
