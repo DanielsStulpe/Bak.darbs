@@ -5,6 +5,7 @@ __pycache__/
 venv
 experiments/
 yolo_model_comparison/
+yolo_models_results/
 model_comparison/
 commands.txt
 datasets/

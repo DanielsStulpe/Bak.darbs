@@ -31,7 +31,7 @@ with open(csv_file, mode="w", newline="") as f:
 
 for model in models:
     print(f"\nTesting {model}...")
-    model_path = os.path.join("model_comparison_results", model)
+    model_path = os.path.join(results_dir, model)
     yolo_model = YOLO(model_path)
 
     metrics = yolo_model.val(
