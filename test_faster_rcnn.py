@@ -100,7 +100,8 @@ test_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-results = evaluate(model, test_loader, device, test_dataset.ann_file)
+ann_file = "roboflow_dataset_coco/test/_annotations.coco.json"
+results = evaluate(model, test_loader, device, ann_file)
 
 
 with open(os.path.join(RESULTS_DIR, "results.txt"), mode="w") as file:
