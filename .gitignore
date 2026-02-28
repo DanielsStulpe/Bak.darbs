@@ -6,6 +6,7 @@ venv
 yolo_models_results_0.0025/
 model_comparison/
 commands.txt
+references.txt
 datasets/
 results/
 faster_rcnn_results/
