@@ -54,14 +54,14 @@ def evaluate(model, data_loader, device, ann_file):
                 })
 
     # Save detections
-    with open(os.path.join(RESULTS_DIR, "retinanet_results.json"), "w") as f:
+    with open(os.path.join(RESULTS_DIR, "retinanet_test_predicts.json"), "w") as f:
         json.dump(predicts, f)
 
     # Load COCO GT
     coco_gt = COCO(ann_file)
 
     # Load detections
-    coco_dt = coco_gt.loadRes(os.path.join(RESULTS_DIR, "retinanet_results.json"))
+    coco_dt = coco_gt.loadRes(os.path.join(RESULTS_DIR, "retinanet_test_predicts.json"))
 
     # Evaluate
     coco_eval = COCOeval(coco_gt, coco_dt, "bbox")
