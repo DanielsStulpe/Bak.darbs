@@ -3,9 +3,9 @@ __pycache__/
 *.pt
 *.pth
 venv
-experiments/
-yolo_model_comparison/
 yolo_models_results_0.0025/
 model_comparison/
 commands.txt
 datasets/
+results/
+faster_rcnn_results/

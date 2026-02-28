@@ -2,58 +2,80 @@
 References:
     - https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html#defining-the-dataset
     - https://github.com/pytorch/vision/tree/main/references/detection
-    - https://github.com/Lightning-AI/torchmetrics/blob/master/src/torchmetrics/detection/mean_ap.py#L50-L689
+    - https://cocodataset.org/#detection-eval
+    - https://github.com/cocodataset/cocoapi/tree/master/PythonAPI/pycocotools
+    - https://mmdetection.readthedocs.io/en/v2.10.0/_modules/mmdet/datasets/coco.html
 """
 
 import torch
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchmetrics.detection.mean_ap import MeanAveragePrecision
+from pycocotools.coco import COCO
+from pycocotools.cocoeval import COCOeval
 
+import json
 import os
 
 from rcnn_data import PotholeDataset
 
-iou_thresholds = [0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-rec_thresholds = [0.25 + 0.01 * i for i in range(76)]
+
+RESULTS_DIR = "faster_rcnn_results"
+os.makedirs(RESULTS_DIR, exist_ok=True)
+
 
 @torch.inference_mode()
-def evaluate(model, data_loader, device):
+def evaluate(model, data_loader, device, ann_file):
     model.eval()
-    metric = MeanAveragePrecision(class_metrics=True, iou_thresholds=iou_thresholds, rec_thresholds=rec_thresholds)
+    predicts = []
 
     for images, targets in data_loader:
         images = [img.to(device) for img in images]
 
         outputs = model(images)
 
-        preds = []
-        for output in outputs:
-            preds.append({
-                "boxes": output["boxes"].to(device),
-                "scores": output["scores"].to(device),
-                "labels": output["labels"].to(device)
-            })
+        for target, output in zip(targets, outputs):
+            image_id = int(target["image_id"].item())
 
-        target = []
-        for t in targets:
-            target.append({
-                "boxes": t["boxes"].to(device),
-                "labels": t["labels"].to(device)
-            })
+            boxes = output["boxes"].to(device)
+            scores = output["scores"].to(device)
+            labels = output["labels"].to(device)
 
-        metric.update(preds, target)
+            for box, score, label in zip(boxes, scores, labels):
+                x1, y1, x2, y2 = box.tolist()
+                predicts.append({
+                    "image_id": image_id,
+                    "category_id": int(label.item()),
+                    "bbox": [
+                        x1,
+                        y1,
+                        x2 - x1,
+                        y2 - y1
+                    ],
+                    "score": float(score.item())
+                })
 
-    results = metric.compute()
-    return results
+    # Save detections
+    with open(os.path.join(RESULTS_DIR, "faster_rcnn_results.json"), "w") as f:
+        json.dump(predicts, f)
+
+    # Load COCO GT
+    coco_gt = COCO(ann_file)
+
+    # Load detections
+    coco_dt = coco_gt.loadRes(os.path.join(RESULTS_DIR, "faster_rcnn_results.json"))
+
+    # Evaluate
+    coco_eval = COCOeval(coco_gt, coco_dt, "bbox")
+    coco_eval.evaluate()
+    coco_eval.accumulate()
+    coco_eval.summarize()
+
+    return coco_eval.stats
 
 
 def collate_fn(batch):
     return tuple(zip(*batch))
 
-
-results_dir = "faster_rcnn_results"
-os.makedirs(results_dir, exist_ok=True)
 
 num_classes = 2
 
@@ -63,7 +85,7 @@ model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
 # Map the saved weights to the current device
 device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device("cpu")
-model.load_state_dict(torch.load(os.path.join(results_dir, "best_faster_rcnn.pth"), weights_only=True))
+model.load_state_dict(torch.load(os.path.join(RESULTS_DIR, "best_faster_rcnn.pth"), weights_only=True))
 model.to(device)
 
 test_dataset = PotholeDataset(
@@ -78,15 +100,15 @@ test_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-results = evaluate(model, test_loader, device)
+results = evaluate(model, test_loader, device, test_dataset.ann_file)
 
 
-with open(os.path.join(results_dir, "results.txt"), mode="w") as file:
-    file.write("mAP50: {:.4f}\n".format(results["map_50"].item()))
-    file.write("mAP50-95: {:.4f}\n".format(results["map"].item()))
-    file.write("Recall: {:.4f}\n".format(results["mar_100_per_class"].item()))
+with open(os.path.join(RESULTS_DIR, "results.txt"), mode="w") as file:
+    file.write("mAP50: {:.4f}\n".format(results[0]))
+    file.write("mAP50-95: {:.4f}\n".format(results[1]))
+    file.write("Recall: {:.4f}\n".format(results[8]))
 
 
-print("mAP50: {:.4f}".format(results["map_50"].item()))
-print("mAP50-95: {:.4f}".format(results["map"].item()))
-print("Recall: {:.4f}".format(results["mar_100_per_class"].item()))
+print("mAP50: {:.4f}".format(results[0]))
+print("mAP50-95: {:.4f}".format(results[1]))
+print("Recall: {:.4f}".format(results[8]))
