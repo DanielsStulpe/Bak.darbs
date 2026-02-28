@@ -102,11 +102,11 @@ results = evaluate(model, test_loader, device, ann_file)
 
 
 with open(os.path.join(RESULTS_DIR, "results.txt"), mode="w") as file:
-    file.write("mAP50: {:.4f}\n".format(results[0]))
-    file.write("mAP50-95: {:.4f}\n".format(results[1]))
+    file.write("mAP50: {:.4f}\n".format(results[1]))
+    file.write("mAP50-95: {:.4f}\n".format(results[0]))
     file.write("Recall: {:.4f}\n".format(results[8]))
 
 
-print("mAP50: {:.4f}".format(results[0]))
-print("mAP50-95: {:.4f}".format(results[1]))
+print("mAP50: {:.4f}".format(results[1]))
+print("mAP50-95: {:.4f}".format(results[0]))
 print("Recall: {:.4f}".format(results[8]))

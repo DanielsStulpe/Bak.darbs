@@ -39,19 +39,17 @@ for model in models:
         split="test",
         imgsz=640,
         batch=1,
-        conf=0.25,
+        conf=0.0,
         max_det=100,
         device=0 if torch.cuda.is_available() else "cpu"
     )
 
     map50 = metrics.box.map50
     map5095 = metrics.box.map
-    precision = metrics.box.mp
     recall = metrics.box.mr
 
     print(f"mAP50: {map50:.4f}")
     print(f"mAP50-95: {map5095:.4f}")
-    print(f"Precision: {precision:.4f}")
     print(f"Recall: {recall:.4f}")
 
     with open(csv_file, mode="a", newline="") as f:
@@ -60,7 +58,6 @@ for model in models:
             model,
             f"{map50:.4f}",
             f"{map5095:.4f}",
-            f"{precision:.4f}",
             f"{recall:.4f}"
         ])
 

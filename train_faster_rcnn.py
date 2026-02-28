@@ -152,16 +152,17 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         losses.backward()
         optimizer.step()
-        lr_scheduler.step()
 
         total_loss += losses.item()
+
+    lr_scheduler.step()
 
     print(f"========== Epoch {epoch} Training Loss: {total_loss} ==========")
 
     results = evaluate(model, val_loader, device, val_ann_file)
 
-    map50 = results[0]
-    map5095 = results[1]
+    map5095 = results[0]
+    map50 = results[1]
 
     print(f"Validation mAP@0.5: {map50:.4f}")
     print(f"Validation mAP@0.5:0.95: {map5095:.4f}")
