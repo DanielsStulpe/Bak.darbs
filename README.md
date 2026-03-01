@@ -117,12 +117,12 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 | Model    | mAP@50 | mAP@50–95 | AR     |
 | -------- | ------ | --------- | ------ |
-| YOLOv8m  | 0.8296 | 0.5684    | 0.7111 |
-| YOLOv9m  | 0.8109 | 0.5376    | 0.7273 |
-| YOLOv10m | 0.8330 | 0.5635    | 0.7403 |
-| YOLOv11m | 0.8442 | 0.5790    | 0.7952 |
-| YOLOv12m | 0.8224 | 0.5723    | 0.7752 |
-| YOLO26m  | 0.8196 | 0.5639    | 0.6918 |
+| YOLOv8m  | 0.8380 | 0.5965    | 0.7111 |
+| YOLOv9m  | 0.8131 | 0.5513    | 0.7273 |
+| YOLOv10m | 0.8425 | 0.5995    | 0.7403 |
+| YOLOv11m | 0.8518 | 0.6057    | 0.7952 |
+| YOLOv12m | 0.8373 | 0.6076    | 0.7752 |
+| YOLO26m  | 0.8235 | 0.5810    | 0.6918 |
 
 ---
 
@@ -133,9 +133,9 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 | Model        | mAP@50 | mAP@50–95 | AR     |
 | ------------ | ------ | --------- | ------ |
 | Faster R-CNN | 0.7525 | 0.4715    | 0.5903 |
-| SSD          | 0.7525 | 0.4715    | 0.5903 |
-| FCOS         | 0.7525 | 0.4715    | 0.5903 |
-| RetinaNet    | 0.7525 | 0.4715    | 0.5903 |
+| SSD          | 0.6491 | 0.3690    | 0.5273 |
+| FCOS         | 0.7727 | 0.4820    | 0.6364 |
+| RetinaNet    | 0.7329 | 0.4718    | 0.6097 |
 
 ---
 
