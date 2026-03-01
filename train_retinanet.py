@@ -164,9 +164,6 @@ for epoch in range(num_epochs):
     print(f"Validation mAP@0.5: {map50:.4f}")
     print(f"Validation mAP@0.5:0.95: {map5095:.4f}")
 
-    print(f"Validation mAP@0.5: {map50:.4f}")
-    print(f"Validation mAP@0.5:0.95: {map5095:.4f}")
-
     # Save best model based on mAP@0.5
     if map50 > best_map:
         best_map = map50

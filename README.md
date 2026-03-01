@@ -74,7 +74,7 @@ All experiments were conducted under identical preprocessing and training condit
 
 ## 4. Hyperparameter Configuration
 
-For YOLO models was used standart learning rate 0.001 as Ultralytics implementaton adjusts learning rate for batch size automatically.
+For YOLO models was used standart learning rate 0.01 as Ultralytics implementaton adjusts learning rate for batch size automatically.
 
 For Torchvision models, learning rate scaling followed the linear scaling rule relative to the reference configurations:
 
@@ -88,14 +88,14 @@ RetinaNet_LR = 0.01 × (Batch Size / 16)
 
 ### 4.1 Training Parameters per Model
 
-| Model        | Framework   | Batch Size | Initial LR |
+| Model        | Framework   | Batch Size |  LR        |
 | ------------ | ----------- | ---------- | ---------- | 
-| YOLOv8m      | Ultralytics | 4          | 0.001      | 
-| YOLOv9m      | Ultralytics | 4          | 0.001      | 
-| YOLOv10m     | Ultralytics | 4          | 0.001      |
-| YOLOv11m     | Ultralytics | 4          | 0.001      |
-| YOLOv12m     | Ultralytics | 4          | 0.001      | 
-| YOLO26m      | Ultralytics | 4          | 0.001      | 
+| YOLOv8m      | Ultralytics | 4          | 0.01       | 
+| YOLOv9m      | Ultralytics | 4          | 0.01       | 
+| YOLOv10m     | Ultralytics | 4          | 0.01       |
+| YOLOv11m     | Ultralytics | 4          | 0.01       |
+| YOLOv12m     | Ultralytics | 4          | 0.01       | 
+| YOLO26m      | Ultralytics | 4          | 0.01       | 
 | Faster R-CNN | Torchvision | 4          | 0.004      |
 | SSD          | Torchvision | 4          | 0.00025    |
 | FCOS         | Torchvision | 4          | 0.0025     |
@@ -123,12 +123,12 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 | Model    | mAP@50 | mAP@50–95 | AR     |
 | -------- | ------ | --------- | ------ |
-| YOLOv8m  | 0.8380 | 0.5965    | 0.7111 |
-| YOLOv9m  | 0.8131 | 0.5513    | 0.7273 |
-| YOLOv10m | 0.8425 | 0.5995    | 0.7403 |
-| YOLOv11m | 0.8518 | 0.6057    | 0.7952 |
-| YOLOv12m | 0.8373 | 0.6076    | 0.7752 |
-| YOLO26m  | 0.8235 | 0.5810    | 0.6918 |
+| YOLOv8m  | 0.7760 | 0.5383    | 0.7321 |
+| YOLOv9m  | 0.8290 | 0.5972    | 0.6818 |
+| YOLOv10m | 0.7854 | 0.5419    | 0.7078 |
+| YOLOv11m | 0.8130 | 0.5540    | 0.7690 |
+| YOLOv12m | 0.8275 | 0.5829    | 0.7575 |
+| YOLO26m  | 0.8453 | 0.5930    | 0.7532 |
 
 ---
 
@@ -138,10 +138,10 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 | Model        | mAP@50 | mAP@50–95 | AR     |
 | ------------ | ------ | --------- | ------ |
-| Faster R-CNN | 0.7525 | 0.4715    | 0.5903 |
-| SSD          | 0.6491 | 0.3690    | 0.5273 |
-| FCOS         | 0.7727 | 0.4820    | 0.6364 |
-| RetinaNet    | 0.7329 | 0.4718    | 0.6097 |
+| Faster R-CNN | 0.7580 | 0.4759    | 0.5610 |
+| SSD          | 0.6316 | 0.3533    | 0.5104 |
+| FCOS         | 0.7754 | 0.4955    | 0.6175 |
+| RetinaNet    | 0.7404 | 0.4858    | 0.6156 |
 
 ---
 

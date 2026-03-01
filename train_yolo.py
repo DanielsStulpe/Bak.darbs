@@ -23,7 +23,7 @@ imgsz = 640
 epochs = 100
 batch_size = 4
 optimizer = "SGD"
-lr0 = 0.001
+lr0 = 0.01
 
 results_dir = "yolo_models_results"
 os.makedirs(results_dir, exist_ok=True)

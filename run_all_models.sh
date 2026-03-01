@@ -31,7 +31,7 @@ python test_ssd.py > ssd.log 2>&1
 
 sleep 30
 
-echo "Starting RetinaNet model..."
+echo "Starting RetinaNet training..."
 python train_retinanet.py > retinanet.log 2>&1
 
 sleep 30
