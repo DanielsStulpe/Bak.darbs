@@ -145,18 +145,23 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 ---
 
-## 7. Preliminary Analysis
+## 7. Results Analysis
 
-* YOLO26m achieved the highest mAP@50 and mAP@50–95 among evaluated YOLO models.
-* YOLOv8m demonstrated the highest precision, indicating fewer false positives.
-* YOLOv10m and YOLO26m achieved the highest recall (0.70), indicating fewer missed detections.
-* Later YOLO versions (v11, v12) did not significantly outperform earlier stable variants under identical training conditions.
+### 7.1 YOLO Models
 
-The inclusion of Faster R-CNN, SSD, FCOS, and RetinaNet enables architectural comparison between:
+Among the evaluated YOLO variants, YOLO26m achieved the highest overall performance, obtaining the best mAP@50 and mAP@50–95 scores. YOLOv9m and YOLOv12m also demonstrated strong results, particularly under stricter IoU thresholds.
 
-* Two-stage detectors (region proposal based)
-* Anchor-based one-stage detectors
-* Anchor-free one-stage detectors
+Although newer YOLO versions showed incremental improvements over YOLOv8m, the performance differences between the variants remained moderate when trained under identical conditions.
+
+### 7.2 Torchvision Models
+
+Among the Torchvision-based detectors, FCOS achieved the highest overall performance. RetinaNet and Faster R-CNN showed competitive but slightly lower results, while SSD obtained the lowest scores across all evaluation metrics.
+
+Overall, YOLO-based architectures outperformed Torchvision implementations within the current experimental setup.
+
+### 7.3 Implication for Further Work
+
+Based on these results, YOLO26m represents the most promising architecture for further investigation. In the second phase of this work, this model will be selected for systematic hyperparameter optimization to evaluate its maximum achievable performance under refined training configurations.
 
 ---
 
