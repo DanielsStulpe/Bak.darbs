@@ -113,7 +113,7 @@ model.to(device)
 
 optimizer = torch.optim.SGD(
     model.parameters(),
-    lr=0.005,
+    lr=0.00025,
     momentum=0.9,
     weight_decay=0.0001
 )

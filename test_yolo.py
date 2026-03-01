@@ -24,7 +24,6 @@ with open(csv_file, mode="w", newline="") as f:
         "Model",
         "mAP50",
         "mAP50-95",
-        "Precision",
         "Recall"
     ])
 
@@ -39,7 +38,7 @@ for model in models:
         split="test",
         imgsz=640,
         batch=1,
-        conf=0.0,
+        conf=0.01,
         max_det=100,
         device=0 if torch.cuda.is_available() else "cpu"
     )
