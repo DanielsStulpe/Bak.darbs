@@ -76,24 +76,30 @@ All experiments were conducted under identical preprocessing and training condit
 
 For YOLO models was used standart learning rate 0.001 as Ultralytics implementaton adjusts learning rate for batch size automatically.
 
-For Torchvision models, learning rate scaling followed the linear scaling rule relative to the reference configuration (LR = 0.02 for batch size 16):
+For Torchvision models, learning rate scaling followed the linear scaling rule relative to the reference configurations:
 
-LR_adjusted = 0.02 × (Batch Size / 16)
+Faster_R-CNN_LR = 0.001 × (Batch Size / 1)
+
+SSD_LR= 0.001 × (Batch Size / 16)
+
+FCOS_LR = 0.01 × (Batch Size / 16)
+
+RetinaNet_LR = 0.01 × (Batch Size / 16)
 
 ### 4.1 Training Parameters per Model
 
-| Model        | Framework   | Batch Size | Initial LR | LR Strategy                     |
-| ------------ | ----------- | ---------- | ---------- | ------------------------------- |
-| YOLOv8m      | Ultralytics | 4          | 0.001      | Adaptive (automatic scheduling) |
-| YOLOv9m      | Ultralytics | 4          | 0.001      | Adaptive                        |
-| YOLOv10m     | Ultralytics | 4          | 0.001      | Adaptive                        |
-| YOLOv11m     | Ultralytics | 4          | 0.001      | Adaptive                        |
-| YOLOv12m     | Ultralytics | 4          | 0.001      | Adaptive                        |
-| YOLO26m      | Ultralytics | 4          | 0.001      | Adaptive                        |
-| Faster R-CNN | Torchvision | 4          | 0.005      | Scaled from 0.02                |
-| SSD          | Torchvision | 4          | 0.005      | Scaled from 0.02                |
-| FCOS         | Torchvision | 4          | 0.005      | Scaled from 0.02                |
-| RetinaNet    | Torchvision | 2          | 0.0025     | Scaled from 0.02                |
+| Model        | Framework   | Batch Size | Initial LR |
+| ------------ | ----------- | ---------- | ---------- | 
+| YOLOv8m      | Ultralytics | 4          | 0.001      | 
+| YOLOv9m      | Ultralytics | 4          | 0.001      | 
+| YOLOv10m     | Ultralytics | 4          | 0.001      |
+| YOLOv11m     | Ultralytics | 4          | 0.001      |
+| YOLOv12m     | Ultralytics | 4          | 0.001      | 
+| YOLO26m      | Ultralytics | 4          | 0.001      | 
+| Faster R-CNN | Torchvision | 4          | 0.004      |
+| SSD          | Torchvision | 4          | 0.00025    |
+| FCOS         | Torchvision | 4          | 0.0025     |
+| RetinaNet    | Torchvision | 2          | 0.00125    |
 
 ---
 
