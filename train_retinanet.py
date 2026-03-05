@@ -129,7 +129,7 @@ lr_scheduler = torch.optim.lr_scheduler.StepLR(
 )
 
 
-num_epochs = 100
+num_epochs = 300
 
 best_map = 0.0
 

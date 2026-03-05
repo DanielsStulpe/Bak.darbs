@@ -20,7 +20,7 @@ models_to_train = [
 
 data_path = "roboflow_dataset_yolo/data.yaml"
 imgsz = 640
-epochs = 100
+epochs = 300
 batch_size = 4
 optimizer = "SGD"
 lr0 = 0.01
