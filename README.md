@@ -65,7 +65,7 @@ All experiments were conducted under identical preprocessing and training condit
 
 | Parameter           | Value        |
 | ------------------- | ------------ |
-| Number of Epochs    | 100          |
+| Number of Epochs    | 300          |
 | Input Image Size    | 640 × 640    |
 | Optimizer           | SGD          |
 | Evaluation Protocol | COCO Metrics |
@@ -123,12 +123,12 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 | Model    | mAP@50 | mAP@50–95 | AR     |
 | -------- | ------ | --------- | ------ |
-| YOLOv8m  | 0.7760 | 0.5383    | 0.7321 |
-| YOLOv9m  | 0.8290 | 0.5972    | 0.6818 |
-| YOLOv10m | 0.7854 | 0.5419    | 0.7078 |
-| YOLOv11m | 0.8130 | 0.5540    | 0.7690 |
-| YOLOv12m | 0.8275 | 0.5829    | 0.7575 |
-| YOLO26m  | 0.8453 | 0.5930    | 0.7532 |
+| YOLOv8m  | 0.8098 | 0.5772    | 0.7143 |
+| YOLOv9m  | 0.7935 | 0.5611    | 0.7205 |
+| YOLOv10m | 0.8075 | 0.5502    | 0.7173 |
+| YOLOv11m | 0.8115 | 0.5706    | 0.6952 |
+| YOLOv12m | 0.8077 | 0.5635    | 0.6883 |
+| YOLO26m  | 0.8245 | 0.5826    | 0.7338 |
 
 ---
 
@@ -138,10 +138,10 @@ COCO metrics provide a comprehensive assessment of both localization and classif
 
 | Model        | mAP@50 | mAP@50–95 | AR     |
 | ------------ | ------ | --------- | ------ |
-| Faster R-CNN | 0.7580 | 0.4759    | 0.5610 |
-| SSD          | 0.6316 | 0.3533    | 0.5104 |
-| FCOS         | 0.7754 | 0.4955    | 0.6175 |
-| RetinaNet    | 0.7404 | 0.4858    | 0.6156 |
+| Faster R-CNN | 0.7566 | 0.4745    | 0.5838 |
+| SSD          | 0.6462 | 0.3711    | 0.5312 |
+| FCOS         | 0.7543 | 0.4996    | 0.6227 |
+| RetinaNet    | 0.7443 | 0.4848    | 0.6279 |
 
 ---
 
