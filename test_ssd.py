@@ -15,7 +15,7 @@ from pycocotools.cocoeval import COCOeval
 import json
 import os
 
-from rcnn_data import PotholeDataset
+from data import PotholeDataset
 
 
 

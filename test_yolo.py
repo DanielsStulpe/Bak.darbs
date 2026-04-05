@@ -6,10 +6,7 @@ import torch
 
 models = [
     "best_yolov8m.pt",
-    "best_yolov9m.pt",
-    "best_yolov10m.pt",
     "best_yolo11m.pt",
-    "best_yolo12m.pt",
     "best_yolo26m.pt"
 ]
 

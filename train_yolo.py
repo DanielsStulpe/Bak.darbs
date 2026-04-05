@@ -11,10 +11,7 @@ import torch
 
 models_to_train = [
     "yolov8m.pt",
-    "yolov9m.pt",
-    "yolov10m.pt",
     "yolo11m.pt",
-    "yolo12m.pt",
     "yolo26m.pt"
 ]
 
