@@ -14,5 +14,5 @@ faster_rcnn_results/
 ssd_results/
 retinanet_results/
 new_results/
-images/
+result_images/
 potholes/
