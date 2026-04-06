@@ -82,7 +82,7 @@ num_classes = 2
 model = torchvision.models.detection.ssd300_vgg16(weights=None)
 
 # Map the saved weights to the current device
-device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device("cpu")
+device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 model.load_state_dict(torch.load(os.path.join(RESULTS_DIR, "best_ssd.pth"), weights_only=True))
 model.to(device)
 

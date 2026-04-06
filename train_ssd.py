@@ -107,7 +107,7 @@ val_loader = torch.utils.data.DataLoader(
 
 val_ann_file = "pothole_dataset_coco/valid/_annotations.coco.json"
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 
