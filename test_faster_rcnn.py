@@ -89,8 +89,8 @@ model.load_state_dict(torch.load(os.path.join(RESULTS_DIR, "best_faster_rcnn.pth
 model.to(device)
 
 test_dataset = PotholeDataset(
-    img_folder="roboflow_dataset_coco/test",
-    ann_file="roboflow_dataset_coco/test/_annotations.coco.json"
+    img_folder="pothole_dataset_coco/test",
+    ann_file="pothole_dataset_coco/test/_annotations.coco.json"
 )
 
 test_loader = torch.utils.data.DataLoader(
@@ -100,7 +100,7 @@ test_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-ann_file = "roboflow_dataset_coco/test/_annotations.coco.json"
+ann_file = "pothole_dataset_coco/test/_annotations.coco.json"
 results = evaluate(model, test_loader, device, ann_file)
 
 

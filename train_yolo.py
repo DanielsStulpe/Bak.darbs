@@ -15,7 +15,7 @@ models_to_train = [
     "yolo26m.pt"
 ]
 
-data_path = "roboflow_dataset_yolo/data.yaml"
+data_path = "pothole_dataset_yolo/data.yaml"
 imgsz = 640
 epochs = 300
 batch_size = 4

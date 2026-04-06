@@ -3,7 +3,7 @@ __pycache__/
 *.pt
 *.pth
 venv
-yolo_models_results_0.0025/
+yolo_models_results/
 model_comparison/
 commands.txt
 references.txt
@@ -11,3 +11,8 @@ datasets/
 results/
 results-300/
 faster_rcnn_results/
+ssd_results/
+retinanet_results/
+new_results/
+images/
+potholes/

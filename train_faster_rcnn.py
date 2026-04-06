@@ -86,8 +86,8 @@ model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
 
 train_dataset = PotholeDataset(
-    img_folder="roboflow_dataset_coco/train",
-    ann_file="roboflow_dataset_coco/train/_annotations.coco.json"
+    img_folder="pothole_dataset_coco/train",
+    ann_file="pothole_dataset_coco/train/_annotations.coco.json"
 )
 
 train_loader = torch.utils.data.DataLoader(
@@ -98,8 +98,8 @@ train_loader = torch.utils.data.DataLoader(
 )
 
 val_dataset = PotholeDataset(
-    img_folder="roboflow_dataset_coco/valid",
-    ann_file="roboflow_dataset_coco/valid/_annotations.coco.json"
+    img_folder="pothole_dataset_coco/valid",
+    ann_file="pothole_dataset_coco/valid/_annotations.coco.json"
 )
 
 val_loader = torch.utils.data.DataLoader(
@@ -109,7 +109,7 @@ val_loader = torch.utils.data.DataLoader(
     collate_fn=collate_fn
 )
 
-val_ann_file = "roboflow_dataset_coco/valid/_annotations.coco.json"
+val_ann_file = "pothole_dataset_coco/valid/_annotations.coco.json"
 
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")

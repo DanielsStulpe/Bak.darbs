@@ -31,7 +31,7 @@ for model in models:
     yolo_model = YOLO(model_path)
 
     metrics = yolo_model.val(
-        data="roboflow_dataset_yolo/data.yaml",
+        data="pothole_dataset_yolo/data.yaml",
         split="test",
         imgsz=640,
         batch=1,
