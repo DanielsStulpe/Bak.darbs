@@ -1,4 +1,4 @@
-# Pothole > FullDatasetV1
+# Pothole > FullDatasetV2
 https://universe.roboflow.com/bak-6b12k/pothole-vr96d
 
 Provided by [Atikur Rahman Chitholian](https://github.com/chitholian/Potholes-Detection)

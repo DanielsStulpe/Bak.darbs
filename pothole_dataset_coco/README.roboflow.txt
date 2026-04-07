@@ -1,8 +1,8 @@
 
-Pothole - v3 FullDatasetV1
+Pothole - v4 FullDatasetV2
 ==============================
 
-This dataset was exported via roboflow.com on April 6, 2026 at 7:29 PM GMT
+This dataset was exported via roboflow.com on April 7, 2026 at 8:23 PM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -17,7 +17,7 @@ visit https://github.com/roboflow/notebooks
 
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
-The dataset includes 1024 images.
+The dataset includes 1020 images.
 Potholes are annotated in COCO format.
 
 The following pre-processing was applied to each image:
