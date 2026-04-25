@@ -1,85 +1,121 @@
 import cv2
-import numpy as np
-import os
+from PIL import Image, ImageDraw, ImageFont
 
 # =========================================
 # CONFIG
 # =========================================
 rows = [
-    ("Ground Truth", "images/ground_truth/gt_0.jpg", "images/ground_truth/gt_1.jpg"),
-    ("YOLOv8", "images/yolo/yolov8_0.jpg", "images/yolo/yolov8_1.jpg"),
-    ("YOLO11", "images/yolo/yolo11_0.jpg", "images/yolo/yolo11_1.jpg"),
-    ("YOLO26", "images/yolo/yolo26_0.jpg", "images/yolo/yolo26_1.jpg"),
-    ("SSD", "images/ssd/ssd_0.jpg", "images/ssd/ssd_1.jpg"),
-    ("RetinaNet", "images/retinanet/retinanet_0.jpg", "images/retinanet/retinanet_1.jpg"),
-    ("Faster R-CNN", "images/faster_rcnn/faster_rcnn_0.jpg", "images/faster_rcnn/faster_rcnn_1.jpg"),
+    ("Attēli",
+     "result_images/default/img-344.jpg",
+     "result_images/default/img-415.jpg",
+     "result_images/default/img-411.jpg"),
+
+    ("YOLOv8",
+     "result_images/yolo/yolov8_0.jpg",
+     "result_images/yolo/yolov8_1.jpg",
+     "result_images/yolo/yolov8_2.jpg"),
+
+    ("YOLO11",
+     "result_images/yolo/yolo11_0.jpg",
+     "result_images/yolo/yolo11_1.jpg",
+     "result_images/yolo/yolo11_2.jpg"),
+
+    ("YOLO26",
+     "result_images/yolo/yolo26_0.jpg",
+     "result_images/yolo/yolo26_1.jpg",
+     "result_images/yolo/yolo26_2.jpg"),
+
+    ("RetinaNet",
+     "result_images/retinanet/retinanet_0.jpg",
+     "result_images/retinanet/retinanet_1.jpg",
+     "result_images/retinanet/retinanet_2.jpg"),
+
+    ("Faster R-CNN",
+     "result_images/faster_rcnn/faster_rcnn_0.jpg",
+     "result_images/faster_rcnn/faster_rcnn_1.jpg",
+     "result_images/faster_rcnn/faster_rcnn_2.jpg"),
 ]
 
 output_path = "comparison_grid.jpg"
 
 # =========================================
-# LOAD & RESIZE IMAGES
+# SETTINGS
 # =========================================
-loaded_rows = []
+img_w, img_h = 400, 400
+label_width = 220
+header_height = 100
+padding = 15
 
-target_size = (400, 400)  # width, height
+font_path = "C:/Windows/Fonts/arial.ttf"
 
-for label, img1_path, img2_path in rows:
-    img1 = cv2.imread(img1_path)
-    img2 = cv2.imread(img2_path)
-
-    img1 = cv2.resize(img1, target_size)
-    img2 = cv2.resize(img2, target_size)
-
-    loaded_rows.append((label, img1, img2))
+# Vienots stils
+font_header = ImageFont.truetype(font_path, 36)
+font_row = ImageFont.truetype(font_path, 30)
 
 # =========================================
-# CREATE GRID CANVAS
+# CANVAS
 # =========================================
-row_height = target_size[1]
-col_width = target_size[0]
+rows_count = len(rows)
+cols_count = 3
 
-label_width = 200  # space for model names (left side)
-header_height = 80  # space for top titles
+total_width = label_width + cols_count * img_w + (cols_count + 1) * padding
+total_height = header_height + rows_count * img_h + (rows_count + 1) * padding
 
-total_height = header_height + len(rows) * row_height
-total_width = label_width + 2 * col_width
-
-canvas = np.ones((total_height, total_width, 3), dtype=np.uint8) * 255
+canvas = Image.new("RGB", (total_width, total_height), "white")
+draw = ImageDraw.Draw(canvas)
 
 # =========================================
-# ADD COLUMN TITLES
+# HEADER (precīzi centrēts)
 # =========================================
-font = cv2.FONT_HERSHEY_SIMPLEX
+headers = ["Attēls 1", "Attēls 2", "Attēls 3"]
 
-cv2.putText(canvas, "Attēls 1",
-            (label_width + 80, 50),
-            font, 1, (0, 0, 0), 2)
+for i, text in enumerate(headers):
+    # Teksta izmērs
+    bbox = draw.textbbox((0, 0), text, font=font_header)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
 
-cv2.putText(canvas, "Attēls 2",
-            (label_width + col_width + 80, 50),
-            font, 1, (0, 0, 0), 2)
+    # Kolonnas centrs
+    col_x_center = label_width + padding + i * (img_w + padding) + img_w // 2
 
-# =========================================
-# FILL GRID
-# =========================================
-for i, (label, img1, img2) in enumerate(loaded_rows):
-    y_offset = header_height + i * row_height
+    # Precīza centrēšana
+    x = col_x_center - text_w // 2
+    y = (header_height - text_h) // 2
 
-    # Insert images
-    canvas[y_offset:y_offset+row_height,
-           label_width:label_width+col_width] = img1
-
-    canvas[y_offset:y_offset+row_height,
-           label_width+col_width:label_width+2*col_width] = img2
-
-    # Add row label (model name)
-    cv2.putText(canvas, label,
-                (20, y_offset + row_height // 2),
-                font, 0.7, (0, 0, 0), 2)
+    draw.text((x, y), text, font=font_header, fill=(0, 0, 0))
 
 # =========================================
-# SAVE RESULT
+# ROWS (attēli + vertikāli centrēti labeli)
 # =========================================
-cv2.imwrite(output_path, canvas)
-print(f"Saved comparison image: {output_path}")
+for i, (label, img1_path, img2_path, img3_path) in enumerate(rows):
+
+    y_offset = header_height + padding + i * (img_h + padding)
+
+    # ---- Attēli ----
+    for j, path in enumerate([img1_path, img2_path, img3_path]):
+        img = cv2.imread(path)
+        img = cv2.resize(img, (img_w, img_h))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(img)
+
+        x_offset = label_width + padding + j * (img_w + padding)
+        canvas.paste(img_pil, (x_offset, y_offset))
+
+    # ---- Label (VERTIKĀLI CENTRĒTS) ----
+    bbox = draw.textbbox((0, 0), label, font=font_row)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+
+    # Vertikāli centrēts pret attēlu
+    text_y = y_offset + (img_h - text_h) // 2
+
+    # Horizontāli (centrēt label laukā)
+    text_x = (label_width - text_w) // 2
+
+    draw.text((text_x, text_y), label, font=font_row, fill=(0, 0, 0))
+
+# =========================================
+# SAVE
+# =========================================
+canvas.save(output_path)
+print(f"Saved: {output_path}")
