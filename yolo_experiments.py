@@ -82,8 +82,8 @@ for opt in optimizers:
         batch=batch_size,
         optimizer=opt,
         lr0=lr0,
-        momentum=0.937 if opt == "SGD" else None,
         workers=1,
+        seed=0.15,
         device=device,
         name=f"yolo11_{opt}"
     )

@@ -37,7 +37,7 @@ for model in models:
         batch=1,
         conf=0.01,
         max_det=100,
-        device=0 if torch.cuda.is_available() else "cpu"
+        device=[0, 1] if torch.cuda.is_available() else "cpu"
     )
 
     map50 = metrics.box.map50
