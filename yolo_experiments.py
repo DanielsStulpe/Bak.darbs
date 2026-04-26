@@ -12,7 +12,6 @@ import torch
 base_model = "yolo11m.pt"
 
 optimizers = [
-    "SGD",
     "Adam",
     "Adamax",
     "AdamW",
@@ -83,7 +82,7 @@ for opt in optimizers:
         optimizer=opt,
         lr0=lr0,
         workers=1,
-        seed=15,
+        seed=25,
         device=device,
         name=f"yolo11_{opt}"
     )
