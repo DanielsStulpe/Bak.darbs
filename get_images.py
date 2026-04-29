@@ -58,12 +58,12 @@ def draw_coco_bboxes(image_path, json_path, output_path):
 
 os.makedirs("result_images/ground_truth", exist_ok=True)
 
-for i in range(len(images)):
-    draw_coco_bboxes(
-        images[i],
-        annotations[i],
-        f"result_images/ground_truth/gt_{i}.jpg"
-    )
+# for i in range(len(images)):
+#     draw_coco_bboxes(
+#         images[i],
+#         annotations[i],
+#         f"result_images/ground_truth/gt_{i}.jpg"
+#     )
 
 # =========================================
 # 2. YOLO MODELS (CUSTOM COLORS)
@@ -150,12 +150,12 @@ def run_torchvision_model(model, model_name, weights_path):
 
 
 # Faster R-CNN
-faster_rcnn = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None)
-in_features = faster_rcnn.roi_heads.box_predictor.cls_score.in_features
-faster_rcnn.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+# faster_rcnn = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None)
+# in_features = faster_rcnn.roi_heads.box_predictor.cls_score.in_features
+# faster_rcnn.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
-run_torchvision_model(faster_rcnn, "faster_rcnn", "best_faster_rcnn.pth")
+# run_torchvision_model(faster_rcnn, "faster_rcnn", "best_faster_rcnn.pth")
 
-# RetinaNet
-retinanet = torchvision.models.detection.retinanet_resnet50_fpn(weights=None)
-run_torchvision_model(retinanet, "retinanet", "best_retinanet.pth")
+# # RetinaNet
+# retinanet = torchvision.models.detection.retinanet_resnet50_fpn(weights=None)
+# run_torchvision_model(retinanet, "retinanet", "best_retinanet.pth")

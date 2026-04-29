@@ -82,7 +82,7 @@ for opt in optimizers:
         optimizer=opt,
         lr0=lr0,
         workers=1,
-        seed=27,
+        seed=29,
         device=device,
         name=f"yolo11_{opt}"
     )
