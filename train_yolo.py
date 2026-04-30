@@ -64,7 +64,7 @@ for model_name in models_to_train:
         batch=batch_size,
         optimizer=optimizer,
         lr0=lr0,
-        seed=29,
+        seed=0,
         workers=1,
         device=[0, 1] if torch.cuda.is_available() else "cpu",
         name=f"train_{model_name.replace('.pt','')}"
