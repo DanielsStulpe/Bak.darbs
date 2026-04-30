@@ -9,9 +9,10 @@ import torch
 # CONFIG
 # ==========================
 
-base_model = "yolo11m.pt"
+base_model = "yolo26m.pt"
 
 optimizers = [
+    "MuSGD",
     "Adam",
     "Adamax",
     "AdamW",
@@ -25,7 +26,7 @@ imgsz = 640
 epochs = 300
 batch_size = 4
 
-results_dir = "yolo11_optimizer_results"
+results_dir = "yolo26_optimizer_results"
 os.makedirs(results_dir, exist_ok=True)
 
 train_csv = os.path.join(results_dir, "train_results.csv")
@@ -65,12 +66,12 @@ with open(test_csv, "w", newline="") as f:
 for opt in optimizers:
 
     print(f"\n===================================")
-    print(f" YOLO11 Training with {opt}")
+    print(f" YOLO26 Training with {opt}")
     print(f"===================================")
 
     model = YOLO(base_model)
 
-    lr0 = 0.01 if opt == "SGD" else 0.001
+    lr0 = 0.01 if opt == "MuSGD" else 0.001
 
     start_time = time.time()
 
@@ -84,7 +85,7 @@ for opt in optimizers:
         workers=1,
         seed=0,
         device=device,
-        name=f"yolo11_{opt}"
+        name=f"yolo26_{opt}"
     )
 
     training_time = time.time() - start_time
@@ -103,7 +104,7 @@ for opt in optimizers:
     # SAVE WEIGHTS
     # ==========================
     best_weight_path = model.trainer.best
-    saved_model_path = os.path.join(results_dir, f"best_yolo11_{opt}.pt")
+    saved_model_path = os.path.join(results_dir, f"best_yolo26_{opt}.pt")
 
     shutil.copy(best_weight_path, saved_model_path)
 
