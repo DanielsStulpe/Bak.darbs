@@ -24,7 +24,7 @@ train_csv = os.path.join(results_dir, "train_results.csv")
 test_csv = os.path.join(results_dir, "test_results.csv")
 log_file = os.path.join(results_dir, "experiment.log")
 
-device = 0 if torch.cuda.is_available() else "cpu"
+device = [0, 1] if torch.cuda.is_available() else "cpu"
 
 # ==========================
 # LOGGER SETUP
