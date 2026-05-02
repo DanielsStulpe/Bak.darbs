@@ -14,7 +14,6 @@ base_model = "yolo26m.pt"
 BATCH_SIZES = [
     1,
     2,
-    4,
     8,
     16,
     32
