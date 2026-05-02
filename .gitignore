@@ -18,3 +18,4 @@ result_images/
 potholes/
 correct_results/
 yolo26_optimizer_results/
+yolo26_batch_sizes_results/

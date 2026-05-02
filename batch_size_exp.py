@@ -11,7 +11,7 @@ import logging
 # ==========================
 base_model = "yolo26m.pt"
 
-BATCH_SIZES = [1, 2, 4, 8, 16, 32]
+BATCH_SIZES = [2, 4, 8, 16, 32]
 
 data_path = "pothole_dataset_yolo/data.yaml"
 imgsz = 640
@@ -88,7 +88,7 @@ for batch_size in BATCH_SIZES:
             lr0=0.001,
             workers=4,
             seed=0,
-            device=0 if batch_size == 1 else device,
+            device=device,
             name=f"yolo26_bs{batch_size}"
         )
 
