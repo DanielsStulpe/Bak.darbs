@@ -88,7 +88,7 @@ for batch_size in BATCH_SIZES:
             lr0=0.001,
             workers=4,
             seed=0,
-            device=device,
+            device=0 if batch_size == 1 else device,
             name=f"yolo26_bs{batch_size}"
         )
 
